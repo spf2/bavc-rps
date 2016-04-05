@@ -1,0 +1,15 @@
+{
+  "name": "rps",
+  "version": "1.0.0",
+  "description": "rock paper scissors websocket server",
+  "main": "index.js",
+  "dependencies": {
+    "nodejs-websocket": "^1.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "spf2",
+  "license": "ISC"
+}
