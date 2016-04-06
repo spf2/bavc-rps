@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rock, Paper, Scissors</title>
+	<script type="text/javascript">
+
+	ws = new WebSocket("wss://bavc-rps.herokuapp.com");
+	ws.onmessage = function(msg) {
+		console.log(msg.data);
+		if (msg.data == "waiting") {
+		} else if (msg.data == "connected") {
+
+		} else {
+			updateComputer(msg.data);
+		}
+	}
+
+		var myNum = 0;
+		var computerNum = 0;
+		var message; // message for board
+		var pScore = 0;
+		var cScore = 0;
+		var round=0;
+		var winner;
+		var pImage;
+
+		// function reset(){
+		// 	pScore = 0;
+		// 	cScore = 0;
+		// 	round = 0;
+		// 	document.getElementById('score').innerHTML = "Player Score: " + pScore + " Computer Score : " + cScore;
+		// 	document.getElementById('round').innerHTML = "Round : " + round;
+		// }
+
+		function updateComputer(num) {
+				computerNum = num;
+				if( num==1 ) {
+					cImage = "rock.png";
+				}
+				else if ( num==2 ) {
+					cImage = "paper.png";
+				}
+				else {
+					cImage = "scissors.png";
+				}
+				document.getElementById('computer-image').innerHTML = '<img src="img/' +cImage+ '" >';
+
+				maybeChooseWinner();
+		}
+
+		function updateMe(num) {
+			ws.send(num);
+			myNum = num;
+			// updates my game images
+
+			if( num==1 ) {
+				pImage = "rock.png";
+			}
+			else if ( num==2 ) {
+				pImage = "paper.png";
+			}
+			else {
+				pImage = "scissors.png";
+			}
+
+			document.getElementById('player-image').innerHTML = '<img src="img/' +pImage+ '" >';
+
+			maybeChooseWinner();
+		}
+
+		function maybeChooseWinner() {
+			if (myNum == 0 || computerNum == 0) {
+				return;
+			}
+
+			if (myNum == computerNum) {
+				// tie
+				message = "Tie Game";
+
+				round++;
+
+			}
+			else if( myNum==1 && computerNum==2) {
+				message = "Paper beats rock, computer wins";
+
+				cScore++;
+				round++;
+			}
+			else if( myNum==1 && computerNum==3) {
+				message = "Rock beats scissors, Player wins";
+
+				pScore++;
+				round++;
+			}
+			else if ( myNum==2 && computerNum==1) {
+				message = "Paper beats rock, Player wins";
+
+				pScore++;
+				round++;
+
+			}
+			else if ( myNum==2 && computerNum==3 ) {
+				message = "Scissors beats paper, computer wins";
+
+				cScore++;
+				round++;
+			}
+			else if ( myNum==3 && computerNum==1 ) {
+				message = "Rock beats scissors, Computer wins";
+
+				cScore++;
+				round++;
+			}
+			else if (  myNum==3 && computerNum==2 ) {
+				message = "Scissors beats paper, Player wins";
+
+				pScore++;
+				round++;
+			}
+
+			// reset
+			if (round >= 3) {
+
+				if (pScore > cScore) {
+					winner = "Player wins the Game!";
+					document.getElementById('player').style.background = "green";
+					document.getElementById('computer').style.background = "red";
+
+				}
+				else if( pScore < cScore) {
+					winner = "Computer wins the Game!"
+					document.getElementById('computer').style.background = "green";
+					document.getElementById('player').style.background = "red";
+				}
+				else {
+					winner = "No winner, tie game!"
+					document.getElementById('player').style.background = "orange";
+					document.getElementById('computer').style.background = "orange";
+				}
+
+				// document.getElementById('again').innerHTML = "<button onclick='reset()'>Click to play again</button>";
+
+				if( round > 3) {
+					round = 1;
+					pScore = 0;
+					cScore = 0;
+					winner = " ";
+					myNum = 0;
+					computerNum = 0;
+					document.getElementById('player').style.background = "white";
+					document.getElementById('computer').style.background = "white";
+					// document.getElementById('player').innerHTML = "";
+					// document.getElementById('computer').innerHTML = "";
+
+				}
+				document.getElementById('winner').innerHTML = winner;
+
+				document.getElementById('round').innerHTML =  "Round : " + round;
+
+			}
+			else {
+
+				document.getElementById('round').innerHTML =  "Round : " + round;
+
+			}
+
+			document.getElementById('score').innerHTML = "Player Score: " + pScore + " Computer Score : " + cScore;
+
+			document.getElementById('result').innerHTML = message;
+
+			console.log(pScore + " " + cScore);
+
+
+		}
+
+
+
+
+	</script>
+	<style type="text/css">
+
+		html, body {
+			width: 100%;
+		}
+
+		div	{
+			float: left;
+			border: 1px solid black;
+			height: 400px;
+			text-align: center;
+
+		}
+		#container {
+			padding: 10px;
+			border: none;
+			margin: 0 auto;
+			width: 100%;
+			min-width: 800px;
+		}
+
+
+		#player, #computer {
+			width: 23%;
+
+		}
+
+		#board {
+			width: 50%;
+			margin: 0 10px ;
+			background: black;
+			color: white
+		}
+		img {
+
+			width: 90px;
+			height: auto;
+			padding: 5px;
+		}
+
+		img:hover {
+			background: grey;
+		}
+
+		img:active {
+			background: darkgrey;
+		}
+
+		.options {
+			background: white;
+		    position: absolute;
+		    bottom: 86px;
+		    width: 50%;
+		    height: 25%;
+		    border-bottom: 1px;
+		    border-left: 0px;
+		    border-right: 0px;
+		    border-top: 0px;
+		    color: black;
+		    padding-top: 10px;
+		    min-width: 400px;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="container">
+
+		<h1>Rock, Paper, Scissors</h1>
+		<h3>(Best out of 3 rounds wins!)</h3>
+		<!-- player options -->
+		<div id="player">
+
+			<h2>Player</h2>
+			<p id="player-image"></p>
+
+		</div>
+
+		<!-- board display -->
+		<div id="board">
+			<h2>Board</h2>
+			<p id="round"></p>
+
+
+			<p id="result"></p>
+			<p id="score"></p>
+
+			<h3 id="winner"></h3>
+
+			<div class="options">
+				<a href="#" onclick="updateMe(1)"><img src="img/rock.png" alt="rock"></a>
+				<a href="#" onclick="updateMe(2)"><img src="img/paper.png" alt="paper"></a>
+				<a href="#" onclick="updateMe(3)"><img src="img/scissors.png" alt="scissors"></a>
+				<p>Click an image to make your move</p>
+			</div>
+
+		</div>
+
+		<!-- computer display -->
+		<div id="computer">
+			<h2>Computer</h2>
+			<p id="computer-image"></p>
+
+		</div>
+	</div>
+</body>
+</html>
