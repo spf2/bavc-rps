@@ -38,7 +38,9 @@ var server = websocket.createServer(function (conn) {
     console.log("text " + str);
     var game = findGame(conn);
     var other = (game[0] == conn) ? game[1] : game[0];
-    other.sendText(str);
+    if (other) {
+      other.sendText(str);
+    }
   });
 
   // Handle closing connection. If have opponent, tell him.

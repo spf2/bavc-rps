@@ -4,12 +4,11 @@
 	<title>Rock, Paper, Scissors</title>
 	<script type="text/javascript">
 
-	ws = new WebSocket("wss://bavc-rps.herokuapp.com");
+	var ws = new WebSocket("wss://bavc-rps.herokuapp.com");
 	ws.onmessage = function(msg) {
 		console.log(msg.data);
 		if (msg.data == "🖐") {
 		} else if (msg.data == "👍") {
-
 		} else {
 			updateComputer(msg.data);
 		}
@@ -168,7 +167,7 @@
 
 			document.getElementById('result').innerHTML = message;
 
-			console.log(pScore + " " + cScore);
+			console.log("player: " + pScore + " computer: " + cScore);
 
 
 		}
