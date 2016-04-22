@@ -7,8 +7,8 @@
 	ws = new WebSocket("wss://bavc-rps.herokuapp.com");
 	ws.onmessage = function(msg) {
 		console.log(msg.data);
-		if (msg.data == "waiting") {
-		} else if (msg.data == "connected") {
+		if (msg.data == "🖐") {
+		} else if (msg.data == "👍") {
 
 		} else {
 			updateComputer(msg.data);

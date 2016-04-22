@@ -25,12 +25,12 @@ var server = websocket.createServer(function (conn) {
       if (game[i] == null) {
         game[i] = conn;
       }
-      game[i].sendText("connected");
+      game[i].sendText("👍");
     }
   // Otherwise, create a new game and wait for opponent.
   } else {
     games.push([conn, null])
-    conn.sendText("waiting");
+    conn.sendText("🖐");
   }
 
   // If receive a message forward it to opponent.
@@ -50,7 +50,7 @@ var server = websocket.createServer(function (conn) {
       if (game[i] == conn) {
         game[i] = null;
       } else if (game[i] != null) {
-        game[i].sendText("waiting");
+        game[i].sendText("🖐");
       }
     }
     if (game[0] == null && game[1] == null) {
