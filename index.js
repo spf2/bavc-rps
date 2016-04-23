@@ -1,19 +1,7 @@
-var websocket = require("nodejs-websocket")
+var websocket = require("nodejs-websocket");
 
 // A list of ongoing games.
 var games = [];
-
-// Find the game that corresponds to this connection.
-function findGame(conn) {
-  for (var i = 0; i < games.length; i++) {
-    for (var j = 0; j < 2; j++) {
-      if (games[i][j] == conn) {
-        return games[i];
-      }
-    }
-  }
-  return null;
-}
 
 var server = websocket.createServer(function (conn) {
   console.log("conn " + conn);
@@ -25,12 +13,12 @@ var server = websocket.createServer(function (conn) {
       if (game[i] == null) {
         game[i] = conn;
       }
-      game[i].sendText("👍");
+      game[i].sendText("ok");
     }
   // Otherwise, create a new game and wait for opponent.
   } else {
     games.push([conn, null])
-    conn.sendText("🖐");
+    conn.sendText("wait");
   }
 
   // If receive a message forward it to opponent.
@@ -52,7 +40,7 @@ var server = websocket.createServer(function (conn) {
       if (game[i] == conn) {
         game[i] = null;
       } else if (game[i] != null) {
-        game[i].sendText("🖐");
+        game[i].sendText("wait");
       }
     }
     if (game[0] == null && game[1] == null) {
@@ -62,6 +50,18 @@ var server = websocket.createServer(function (conn) {
     }
   });
 })
+
+// Find the game that corresponds to this connection.
+function findGame(conn) {
+  for (var i = 0; i < games.length; i++) {
+    for (var j = 0; j < 2; j++) {
+      if (games[i][j] == conn) {
+        return games[i];
+      }
+    }
+  }
+  return null;
+}
 
 // Run the server.
 server.listen(process.env.PORT || 3001);
